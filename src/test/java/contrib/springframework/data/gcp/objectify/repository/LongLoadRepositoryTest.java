@@ -141,6 +141,23 @@ public class LongLoadRepositoryTest extends AbstractLongRepositoryTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    public void findAllWithInvalidIds_willNotReturnNullOptionals() {
+        TestLongEntity legit = fixture.get().setId(1L);
+        save(legit);
+
+        Key<TestLongEntity> keyExists = Key.create(TestLongEntity.class, 1);
+        Key<TestLongEntity> keyDoesNotExist = Key.create(TestLongEntity.class, 2);
+        Map<Key<TestLongEntity>, Optional<TestLongEntity>> resultMap = repository.findAll(keyExists, keyDoesNotExist);
+
+        assertThat(resultMap.get(keyExists))
+                .isNotNull();
+
+        assertThat(resultMap.get(keyDoesNotExist))
+                .isNotNull();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void findAllVarargs_willReturnEmpty_whenNoKeysArePassed() throws Exception {
         Map<Key<TestLongEntity>, Optional<TestLongEntity>> result = repository.findAll((Key<TestLongEntity>[]) new Key[]{});
 

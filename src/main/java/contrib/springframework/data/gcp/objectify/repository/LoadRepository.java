@@ -57,15 +57,13 @@ public interface LoadRepository<E, I extends Serializable> extends ObjectifyAwar
      */
     @Nonnull
     default Map<Key<E>, Optional<E>> findAll(Collection<Key<E>> keys) {
-        return ofy()
-                .load()
-                .keys(keys)
-                .entrySet()
-                .parallelStream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> Optional.ofNullable(entry.getValue())
-                ));
+        Map<Key<E>, Optional<E>> result = new HashMap<>();
+
+        Map<Key<E>, E> entries = ofy().load().keys(keys);
+
+        keys.forEach(key -> result.put(key, Optional.ofNullable(entries.get(key))));
+
+        return result;
     }
 
     /**

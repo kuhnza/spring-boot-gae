@@ -31,6 +31,11 @@ public class TestLongEntity {
         return id;
     }
 
+    public TestLongEntity setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
     public String getName() {
         return name;
     }

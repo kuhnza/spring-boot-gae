@@ -141,6 +141,23 @@ public class StringLoadRepositoryTest extends AbstractStringRepositoryTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    public void findAllWithInvalidIds_willNotReturnNullOptionals() {
+        TestStringEntity legit = fixture.get().setId("legit");
+        save(legit);
+
+        Key<TestStringEntity> keyExists = Key.create(TestStringEntity.class, "legit");
+        Key<TestStringEntity> keyDoesNotExist = Key.create(TestStringEntity.class, "bogus");
+        Map<Key<TestStringEntity>, Optional<TestStringEntity>> resultMap = repository.findAll(keyExists, keyDoesNotExist);
+
+        assertThat(resultMap.get(keyExists))
+                .isNotNull();
+
+        assertThat(resultMap.get(keyDoesNotExist))
+                .isNotNull();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void findAllVarargs_willReturnEmpty_whenNoKeysArePassed() throws Exception {
         Map<Key<TestStringEntity>, Optional<TestStringEntity>> result = repository.findAll((Key<TestStringEntity>[]) new Key[]{});
 
